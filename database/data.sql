@@ -3,9 +3,7 @@
 
 -- EXAMPLE:
 
---  insert into "todos"
---    ("task", "isCompleted")
---    values
---      ('Learn to code', false),
---      ('Build projects', false),
---      ('Get a job', false);
+ insert into "customers"
+   ("name", "address","email","phoneNumber")
+   values
+     ('Eduardo Gallegos', '123 Sesame Street', 'gallegoseduardo414@gmail.com', '323 672 5787');
