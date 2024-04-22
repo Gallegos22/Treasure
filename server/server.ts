@@ -7,6 +7,15 @@ import {
   defaultMiddleware,
   errorMiddleware,
 } from './lib/index.js';
+import { add } from 'husky';
+
+type Customer = {
+  customerId: number;
+  name: string;
+  address: string;
+  email: string;
+  phoneNumber: string;
+};
 
 const connectionString =
   process.env.DATABASE_URL ||
@@ -19,6 +28,7 @@ const db = new pg.Pool({
 });
 
 const app = express();
+app.use(express.json());
 
 // Create paths for static directories
 const reactStaticDir = new URL('../client/dist', import.meta.url).pathname;
@@ -29,8 +39,109 @@ app.use(express.static(reactStaticDir));
 app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello, World!' });
+app.get('/api/customers', async (req, res, next) => {
+  try {
+    const sql = `
+      select *
+        from "customers"
+        order by "customerId";
+    `;
+    const result = await db.query<Customer>(sql);
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/customers/:customerId', async (req, res, next) => {
+  try {
+    const { customerId } = req.params;
+    if (!Number.isInteger(+customerId)) {
+      throw new ClientError(400, `Non-integer actorId: ${customerId}`);
+    }
+    const sql = `
+      select * from "customers"
+      where "customerId" = $1;
+    `;
+    const params = [customerId];
+    const result = await db.query(sql, params);
+    const customer = result.rows[0];
+    if (!customer) throw new ClientError(404, `actor ${customerId} not found`);
+    res.json(customer);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/customers', async (req, res, next) => {
+  try {
+    const { name, address, email, phoneNumber } = req.body;
+    if (!name || !address || !email || !phoneNumber) {
+      throw new ClientError(400, 'missing information required');
+    }
+    const sql = `
+      insert into "customers" ("name", "address", "email", "phoneNumber")
+        values ($1, $2, $3, $4)
+        returning *
+    `;
+    const params = [name, address, email, phoneNumber];
+    const result = await db.query<Customer>(sql, params);
+    const [customer] = result.rows;
+    res.status(201).json(customer);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.put('/api/customers/:customerId', async (req, res, next) => {
+  try {
+    const { customerId } = req.params;
+    if (!Number.isInteger(+customerId)) {
+      throw new ClientError(400, `Non-integer customerId: ${customerId}`);
+    }
+    const { name, address, email, phoneNumber } = req.body;
+    if (!name || !address || !email || !phoneNumber) {
+      throw new ClientError(400, 'missing information required');
+    }
+    const sql = `
+      update "customers"
+        set "name" = $1,
+            "address" = $2,
+            "email" = $3,
+            "phoneNumber" = $4
+      where "customerId" = $5
+      returning *;
+      `;
+    const params = [name, address, email, phoneNumber, customerId];
+    const result = await db.query(sql, params);
+    const customer = result.rows[0];
+    if (!customer) throw new ClientError(404, `actor ${customerId} not found`);
+    res.status(200).json(customer);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/customers/:customerId', async (req, res, next) => {
+  try {
+    const { customerId } = req.params;
+    if (!Number.isInteger(+customerId)) {
+      throw new ClientError(400, `Non-integer customer: ${customerId}`);
+    }
+    const sql = `
+      delete from "customers"
+      where "customerId" = $1
+      returning *;
+      `;
+    const params = [customerId];
+    const result = await db.query(sql, params);
+    const customer = result.rows[0];
+    if (!customer)
+      throw new ClientError(404, `customer ${customerId} not found`);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
 });
 
 /*
