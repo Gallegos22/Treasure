@@ -1,5 +1,5 @@
-import './NewCustomer.css';
 import type { FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 
 export function NewCustomerForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -46,8 +46,8 @@ export function NewCustomerForm() {
         </label>
         <button type="submit">Save</button>
         <button>Convert To Invoice</button>
-        <button>Back</button>
       </form>
+      <Link to="/">Back</Link>
     </div>
   );
 }
