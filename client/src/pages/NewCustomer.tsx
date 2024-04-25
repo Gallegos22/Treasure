@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import './NewCustomer.css';
 
 export function NewCustomerForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -26,28 +27,84 @@ export function NewCustomerForm() {
 
   return (
     <div>
-      <h1>New Customer</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name
-          <input name="name" type="text" required />
-        </label>
-        <label>
-          Phone Number
-          <input name="phoneNumber" type="text" required />
-        </label>
-        <label>
-          Address
-          <input name="address" type="text" required />
-        </label>
-        <label>
-          Email
-          <input name="email" type="text" required />
-        </label>
-        <button type="submit">Save</button>
-        <button>Convert To Invoice</button>
-      </form>
-      <Link to="/">Back</Link>
+      <h1 className="new-customer-heading mb-10 text-black">New Customer</h1>
+      <div className="main-container flex justify-center">
+        <div className="form-container w-96 h-full">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col justify-between h-full">
+            <div className="h-full">
+              <div className="flex text-3xl mb-2">
+                <label htmlFor="name" className="text-black ">
+                  Name
+                </label>
+              </div>
+              <div className="text-3xl mb-6">
+                <input
+                  name="name"
+                  type="text"
+                  id="name"
+                  required
+                  className="w-full rounded-md p-2 bg-white text-black"
+                />
+              </div>
+              <div className="flex text-3xl mb-2">
+                <label htmlFor="phoneNumber" className="text-black">
+                  Phone Number
+                </label>
+              </div>
+              <div className="text-3xl mb-6">
+                <input
+                  name="phoneNumber"
+                  type="text"
+                  id="phoneNumber"
+                  required
+                  className="w-full rounded-md p-2 bg-white text-black"
+                />
+              </div>
+              <div className="flex text-3xl mb-2">
+                <label htmlFor="address" className="text-black ">
+                  Address
+                </label>
+              </div>
+              <div className="text-3xl mb-6">
+                <input
+                  name="address"
+                  type="text"
+                  id="address"
+                  required
+                  className="w-full rounded-md p-2 bg-white text-black"
+                />
+              </div>
+              <div className="flex text-3xl mb-2">
+                <label htmlFor="email" className="text-black ">
+                  Email
+                </label>
+              </div>
+              <div className="text-3xl mb-6">
+                <input
+                  name="email"
+                  type="text"
+                  id="email"
+                  required
+                  className="w-full rounded-md p-2 bg-white text-black"
+                />
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <button type="submit" className="bg-green-500 rounded-3xl">
+                Save
+              </button>
+              <button className="bg-blue-500 rounded-3xl">
+                Convert To Invoice
+              </button>
+            </div>
+            <Link to="/" className="mb-20 mt-14 text-red-500 text-3xl">
+              Back
+            </Link>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

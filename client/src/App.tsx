@@ -9,11 +9,12 @@ import { NewInvoice } from './pages/NewInvoice';
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Header />} />
-      <Route index element={<LandingPage />} />
-      <Route path="customer-list" element={<CustomerList />} />
-      <Route path="customer-form" element={<NewCustomerForm />} />
-      <Route path="new-invoice" element={<NewInvoice />} />
+      <Route path="/" element={<Header />}>
+        <Route index element={<LandingPage />} />
+        <Route path="customer-list" element={<CustomerList />} />
+        <Route path="customer-form/:customerId" element={<NewCustomerForm />} />
+        <Route path="new-invoice" element={<NewInvoice />} />
+      </Route>
     </Routes>
   );
 }

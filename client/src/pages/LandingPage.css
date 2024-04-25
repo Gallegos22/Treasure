@@ -1,0 +1,51 @@
+.main-container {
+  height: 800px;
+}
+
+.margin {
+  margin-top: 36px;
+  margin-bottom: 96px;
+}
+
+.select-option {
+  margin-top: 58px;
+  font-size: 45px;
+  text-decoration: underline;
+}
+
+.new-invoice {
+  transition: transform 0.2s;
+}
+
+.new-invoice:hover {
+  transform: scale(1.5);
+}
+
+.new-invoice:hover a {
+  color: white;
+}
+
+.customer-list {
+  transition: transform 0.2s;
+}
+
+.customer-list:hover {
+  transform: scale(1.5);
+}
+
+.customer-list:hover a {
+  color: white;
+}
+
+.new-customer {
+  transition: transform 0.2s;
+}
+
+.new-customer:hover {
+  transform: scale(1.5);
+  color: white;
+}
+
+.new-customer:hover a {
+  color: white;
+}
