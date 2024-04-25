@@ -1,33 +1,94 @@
-import type { FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import './NewCustomer.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import { type Customer } from './CustomerList';
+import { useEffect } from 'react';
 
 export function NewCustomerForm() {
+  const { customerId } = useParams();
+  const isEditing = customerId && customerId !== 'new';
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<unknown>();
+  const [customer, setCustomer] = useState<Customer>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function load(id: number) {
+      setIsLoading(true);
+      try {
+        const customer = await fetch(`/api/customers/${customerId}`);
+        if (!customer) throw new Error(`Entry with ID ${id} not found`);
+        setCustomer(await customer.json());
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    if (isEditing) load(+customerId);
+  }, [customerId]);
+
+  console.log('customer:', customer);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const { name, phoneNumber, address, email } = Object.fromEntries(formData);
-    try {
-      const req = {
-        // creating req object to hold whatever data the user is inputting
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, phoneNumber, address, email }), // converting object to JSON string
-      };
-      const res = await fetch('/api/customers', req); // awaiting for successful response
-      if (!res.ok) throw new Error(`fetch Error ${res.status}`);
-      console.log('await res.json():', await res.json());
-    } catch (err) {
-      console.log('Error!');
+    const customer = Object.fromEntries(formData);
+
+    if (isEditing) {
+      try {
+        const req = {
+          // creating req object to hold whatever data the user is inputting
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(customer), // converting object to JSON string
+        };
+        const res = await fetch(`/api/customers/${customerId}`, req); // awaiting for successful response
+        if (!res.ok) throw new Error(`fetch Error ${res.status}`);
+        console.log('await res.json():', await res.json());
+      } catch (err) {
+        console.log('Error!');
+      }
+    } else {
+      try {
+        const req = {
+          // creating req object to hold whatever data the user is inputting
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(customer), // converting object to JSON string
+        };
+        const res = await fetch('/api/customers', req); // awaiting for successful response
+        if (!res.ok) throw new Error(`fetch Error ${res.status}`);
+        console.log('await res.json():', await res.json());
+      } catch (err) {
+        console.log('Error!');
+      }
     }
+
     event.target.reset();
+    navigate('/customer-list');
+  }
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) {
+    return (
+      <div>
+        Error Loading Entry with ID {customerId}:{' '}
+        {error instanceof Error ? error.message : 'Unknown Error'}
+      </div>
+    );
   }
 
   return (
     <div>
-      <h1 className="new-customer-heading mb-10 text-black">New Customer</h1>
+      <h1 className="new-customer-heading mb-10 text-black">
+        {isEditing ? 'Edit Customer' : 'New Customer'}
+      </h1>
       <div className="main-container flex justify-center">
         <div className="form-container w-96 h-full">
           <form
@@ -44,6 +105,7 @@ export function NewCustomerForm() {
                   name="name"
                   type="text"
                   id="name"
+                  defaultValue={customer?.name ?? ''} // if there is name then use value, if not then set to empty string
                   required
                   className="w-full rounded-md p-2 bg-white text-black"
                 />
@@ -56,8 +118,9 @@ export function NewCustomerForm() {
               <div className="text-3xl mb-6">
                 <input
                   name="phoneNumber"
-                  type="text"
-                  id="phoneNumber"
+                  type="phone"
+                  id="tel"
+                  defaultValue={customer?.phoneNumber ?? ''}
                   required
                   className="w-full rounded-md p-2 bg-white text-black"
                 />
@@ -72,6 +135,7 @@ export function NewCustomerForm() {
                   name="address"
                   type="text"
                   id="address"
+                  defaultValue={customer?.address ?? ''}
                   required
                   className="w-full rounded-md p-2 bg-white text-black"
                 />
@@ -86,6 +150,7 @@ export function NewCustomerForm() {
                   name="email"
                   type="text"
                   id="email"
+                  defaultValue={customer?.email ?? ''}
                   required
                   className="w-full rounded-md p-2 bg-white text-black"
                 />

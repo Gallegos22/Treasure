@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './CustomerList.css';
 
-type Customer = {
+export type Customer = {
   customerId: number;
   name: string;
   address: string;
