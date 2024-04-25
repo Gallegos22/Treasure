@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import './CustomerList.css';
 
 type Customer = {
   customerId: number;
@@ -43,8 +44,9 @@ export function CustomerList() {
   }
   return (
     <div className="container">
-      <h1>All Customers</h1>
-      <hr />
+      <h1 className="mb-14 mt-14 customer-list-heading text-black">
+        All Customers
+      </h1>
       <div className="row">
         {customers?.map(
           (
@@ -70,13 +72,28 @@ function CustomerCard({ customer }: CustomerProps) {
   const { name, phoneNumber, address, email } = customer; // will need  customerId eventually
   return (
     <div>
-      <div className="card-body">
-        <p>Name: {name}</p>
-        <p>Phone Number: {phoneNumber}</p>
-        <p>Address: {address}</p>
-        <p>Email: {email}</p>
+      <div className="flex justify-center">
+        <div className="w-96">
+          <div className="card-body border-solid border-4 border-black mt-4 mb-4 rounded-2xl text-xl bg-white text-black">
+            <p className="mt-4 mb-4">Name: {name}</p>
+            <p className="mt-4 mb-4">Phone Number: {phoneNumber}</p>
+            <p className="mt-4 mb-4">Address: {address}</p>
+            <p className="mt-4 mb-4">Email: {email}</p>
+            <div className="mt-7 mb-7">
+              <Link
+                className="border-solid border-2 border-black p-3 bg-blue-600 text-white rounded-lg text-lg"
+                to={`/customer-form/${customer.customerId}`}>
+                Edit
+              </Link>
+            </div>
+            <div className="mt-7 mb-7">
+              <Link to="/" className="text-lg text-red-500 p-3">
+                Back{' '}
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
-      <Link to="/">Back </Link>
     </div>
   );
 }
