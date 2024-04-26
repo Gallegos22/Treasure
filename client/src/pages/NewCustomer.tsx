@@ -2,8 +2,14 @@ import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import './NewCustomer.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { type Customer } from './CustomerList';
+import {
+  addCustomer,
+  removeCustomer,
+  updateCustomer,
+  type Customer,
+} from '../data';
 import { useEffect } from 'react';
+export const tokenKey = 'um.token';
 
 export function NewCustomerForm() {
   const { customerId } = useParams();
@@ -12,6 +18,7 @@ export function NewCustomerForm() {
   const [error, setError] = useState<unknown>();
   const [customer, setCustomer] = useState<Customer>();
   const navigate = useNavigate();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     async function load(id: number) {
@@ -29,48 +36,24 @@ export function NewCustomerForm() {
     if (isEditing) load(+customerId);
   }, [customerId]);
 
-  console.log('customer:', customer);
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const customer = Object.fromEntries(formData);
+    const newCustomer = Object.fromEntries(formData) as unknown as Customer; // WHY DO WE NEED AS UNKNOWN AS CUSTOMER
 
     if (isEditing) {
-      try {
-        const req = {
-          // creating req object to hold whatever data the user is inputting
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(customer), // converting object to JSON string
-        };
-        const res = await fetch(`/api/customers/${customerId}`, req); // awaiting for successful response
-        if (!res.ok) throw new Error(`fetch Error ${res.status}`);
-        console.log('await res.json():', await res.json());
-      } catch (err) {
-        console.log('Error!');
-      }
+      updateCustomer({ ...customer, ...newCustomer });
     } else {
-      try {
-        const req = {
-          // creating req object to hold whatever data the user is inputting
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(customer), // converting object to JSON string
-        };
-        const res = await fetch('/api/customers', req); // awaiting for successful response
-        if (!res.ok) throw new Error(`fetch Error ${res.status}`);
-        console.log('await res.json():', await res.json());
-      } catch (err) {
-        console.log('Error!');
-      }
+      addCustomer(newCustomer);
     }
 
     event.target.reset();
+    navigate('/customer-list');
+  }
+
+  function handleDelete() {
+    if (!customer?.customerId) throw new Error('Should never happen');
+    removeCustomer(customer.customerId);
     navigate('/customer-list');
   }
 
@@ -118,8 +101,8 @@ export function NewCustomerForm() {
               <div className="text-3xl mb-6">
                 <input
                   name="phoneNumber"
-                  type="phone"
-                  id="tel"
+                  type="tel"
+                  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                   defaultValue={customer?.phoneNumber ?? ''}
                   required
                   className="w-full rounded-md p-2 bg-white text-black"
@@ -157,17 +140,54 @@ export function NewCustomerForm() {
               </div>
             </div>
             <div className="flex justify-between">
-              <button type="submit" className="bg-green-500 rounded-3xl">
+              <button
+                type="submit"
+                className="bg-green-500 rounded-3xl hover:bg-green-600">
                 Save
               </button>
-              <button className="bg-blue-500 rounded-3xl">
+              <button className="bg-blue-500 rounded-3xl hover:bg-blue-600 ml-4">
                 Convert To Invoice
               </button>
+              <div>
+                {isEditing && (
+                  <button
+                    type="button"
+                    className="bg-red-500 rounded-3xl hover:bg-red-600"
+                    onClick={() => setIsDeleting(true)}>
+                    Delete
+                  </button>
+                )}
+              </div>
             </div>
-            <Link to="/" className="mb-20 mt-14 text-red-500 text-3xl">
-              Back
-            </Link>
+            <div className="mt-7 mb-14">
+              <Link to="/" className="text-red-500 text-3xl hover:text-red-600">
+                Back
+              </Link>
+            </div>
           </form>
+          {isDeleting && (
+            <div className="modal-container flex justify-center items-center">
+              <div className="modal bg-sky-900">
+                <div>
+                  <p className="mt-4">
+                    Are you sure you want to delete this Customer?
+                  </p>
+                </div>
+                <div className="flex justify-between mt-7">
+                  <button
+                    className="modal-button red-background white-text ml-11 bg-green-500 rounded-3xl hover:bg-green-600"
+                    onClick={handleDelete}>
+                    Confirm
+                  </button>
+                  <button
+                    className="modal-button text-center mr-11 bg-red-500 rounded-3xl hover:bg-red-600"
+                    onClick={() => setIsDeleting(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

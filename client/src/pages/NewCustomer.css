@@ -3,3 +3,26 @@
   font-size: 45px;
   text-decoration: underline;
 }
+
+.modal-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  height: 176px;
+  width: 400px;
+  border-radius: 20px;
+  font-size: 20px;
+}
+
+.modal-button {
+  border-radius: 5px;
+  height: 50px;
+  width: 120px;
+  font-size: 18px;
+}
