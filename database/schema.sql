@@ -20,3 +20,13 @@ CREATE TABLE "public"."customers" (
   "phoneNumber" text not null,
   "createdAt" timestamptz(6) not null default now()
 );
+CREATE TABLE "public"."jobs" (
+  "jobId" serial PRIMARY KEY,
+  "customerId" integer not null,
+  "jobDetails" text not null,
+  "quantity" integer not null,
+  "perCost" text not null,
+  "dateOfJob" text not null,
+  "createdAt" timestamptz(6) not null default now ()
+);
+ALTER TABLE "public"."jobs" ADD FOREIGN KEY ("customerId") REFERENCES "public"."customers" ("customerId");

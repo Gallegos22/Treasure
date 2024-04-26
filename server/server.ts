@@ -17,6 +17,14 @@ type Customer = {
   phoneNumber: string;
 };
 
+type Job = {
+  customerId: number;
+  jobDetails: string;
+  quantity: string;
+  perCost: string;
+  dateOfJob: string;
+};
+
 const connectionString =
   process.env.DATABASE_URL ||
   `postgresql://${process.env.RDS_USERNAME}:${process.env.RDS_PASSWORD}@${process.env.RDS_HOSTNAME}:${process.env.RDS_PORT}/${process.env.RDS_DB_NAME}`;
@@ -77,7 +85,7 @@ app.post('/api/customers', async (req, res, next) => {
   try {
     const { name, address, email, phoneNumber } = req.body;
     if (!name || !address || !email || !phoneNumber) {
-      throw new ClientError(400, 'missing information required');
+      throw new ClientError(400, 'missing customer information required');
     }
     const sql = `
       insert into "customers" ("name", "address", "email", "phoneNumber")
@@ -138,6 +146,118 @@ app.delete('/api/customers/:customerId', async (req, res, next) => {
     const customer = result.rows[0];
     if (!customer)
       throw new ClientError(404, `customer ${customerId} not found`);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/jobs', async (req, res, next) => {
+  try {
+    const sql = `
+      select *
+        from "jobs"
+        order by "jobId";
+    `;
+    const result = await db.query<Job>(sql);
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/jobs/:jobId', async (req, res, next) => {
+  try {
+    const { jobId } = req.params;
+    if (!Number.isInteger(+jobId)) {
+      throw new ClientError(400, `Non-integer jobId: ${jobId}`);
+    }
+    const sql = `
+      select * from "jobs"
+      where "jobId" = $1;
+    `;
+    const params = [jobId];
+    const result = await db.query(sql, params);
+    const job = result.rows[0];
+    if (!job) throw new ClientError(404, `job ${jobId} not found`);
+    res.json(job);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/jobs', async (req, res, next) => {
+  try {
+    const { customerId, jobDetails, quantity, perCost, dateOfJob } = req.body;
+    if (!customerId || !jobDetails || !quantity || !perCost || !dateOfJob) {
+      throw new ClientError(400, 'missing job information required');
+    }
+    const sql = `
+      insert into "jobs" ("jobDetails","quantity","perCost","dateOfJob","customerId")
+        values ($1, $2, $3, $4, $5)
+        returning *
+    `;
+    const params = [jobDetails, quantity, perCost, dateOfJob, customerId];
+    const result = await db.query<Job>(sql, params);
+    const [job] = result.rows;
+    res.status(201).json(job);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.put('/api/jobs/:jobId', async (req, res, next) => {
+  try {
+    const { jobId } = req.params;
+    if (!Number.isInteger(+jobId)) {
+      throw new ClientError(400, `Non-integer customerId: ${jobId}`);
+    }
+    const { customerId, jobDetails, quantity, perCost, dateOfJob } = req.body;
+    if (!customerId || !jobDetails || !quantity || !perCost || !dateOfJob) {
+      throw new ClientError(400, 'missing job information required');
+    }
+    const sql = `
+      update "jobs"
+        set "customerId" = $1,
+            "jobDetails" = $2,
+            "quantity" = $3,
+            "perCost" = $4,
+            "dateOfJob" = $5
+      where "jobId" = $6
+      returning *;
+      `;
+    const params = [
+      customerId,
+      jobDetails,
+      quantity,
+      perCost,
+      dateOfJob,
+      jobId,
+    ];
+    const result = await db.query(sql, params);
+    const job = result.rows[0];
+    if (!job) throw new ClientError(404, `job ${jobId} not found`);
+    res.status(200).json(job);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/jobs/:jobId', async (req, res, next) => {
+  try {
+    const { jobId } = req.params;
+    if (!Number.isInteger(+jobId)) {
+      throw new ClientError(400, `Non-integer job: ${jobId}`);
+    }
+    const sql = `
+      delete from "jobs"
+      where "jobId" = $1
+      returning *;
+      `;
+    const params = [jobId];
+    const result = await db.query(sql, params);
+    const job = result.rows[0];
+    if (!job) throw new ClientError(404, `job ${jobId} not found`);
     res.sendStatus(204);
   } catch (err) {
     next(err);

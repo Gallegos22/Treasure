@@ -98,6 +98,7 @@ export function NewCustomerForm() {
                   Phone Number
                 </label>
               </div>
+              <p className="flex text-black">Format: 123-456-7890</p>
               <div className="text-3xl mb-6">
                 <input
                   name="phoneNumber"
