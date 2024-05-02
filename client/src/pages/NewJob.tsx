@@ -1,23 +1,18 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import './NewCustomer.css';
+import './NewJob.css';
 import './Modal.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  addCustomer,
-  removeCustomer,
-  updateCustomer,
-  type Customer,
-} from '../data';
+import { removeJob, addJob, updateJob, type Job } from '../data';
 import { useEffect } from 'react';
 export const tokenKey = 'um.token';
 
-export function NewCustomerForm() {
-  const { customerId } = useParams();
-  const isEditing = customerId && customerId !== 'new';
+export function NewJobForm() {
+  const { jobId } = useParams();
+  const isEditing = jobId && !jobId.includes('new');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>();
-  const [customer, setCustomer] = useState<Customer>();
+  const [job, setJob] = useState<Job>();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -25,44 +20,45 @@ export function NewCustomerForm() {
     async function load(id: number) {
       setIsLoading(true);
       try {
-        const customer = await fetch(`/api/customers/${customerId}`);
-        if (!customer) throw new Error(`Entry with ID ${id} not found`);
-        setCustomer(await customer.json());
+        const job = await fetch(`/api/jobs/${jobId}`);
+        if (!job) throw new Error(`Job with ID ${id} not found`);
+        setJob(await job.json());
       } catch (err) {
         setError(err);
       } finally {
         setIsLoading(false);
       }
     }
-    if (isEditing) load(+customerId);
-  }, [customerId]);
+    if (isEditing) load(+jobId);
+  }, [jobId]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const newCustomer = Object.fromEntries(formData) as unknown as Customer; // WHY DO WE NEED AS UNKNOWN AS CUSTOMER
+    const newJob = Object.fromEntries(formData) as unknown as Job;
 
     if (isEditing) {
-      updateCustomer({ ...customer, ...newCustomer });
+      updateJob({ ...job, ...newJob });
     } else {
-      addCustomer(newCustomer);
+      newJob.customerId = jobId?.split('-')[0];
+      addJob(newJob);
     }
 
     event.target.reset();
-    navigate('/customer-list');
+    navigate('/job-list');
   }
 
   function handleDelete() {
-    if (!customer?.customerId) throw new Error('Should never happen');
-    removeCustomer(customer.customerId);
-    navigate('/customer-list');
+    if (!job?.jobId) throw new Error('Should never happen');
+    removeJob(job.jobId);
+    navigate('/job-list');
   }
 
   if (isLoading) return <div>Loading...</div>;
   if (error) {
     return (
       <div>
-        Error Loading Entry with ID {customerId}:{' '}
+        Error Loading Entry with ID {jobId}:{' '}
         {error instanceof Error ? error.message : 'Unknown Error'}
       </div>
     );
@@ -70,8 +66,8 @@ export function NewCustomerForm() {
 
   return (
     <div>
-      <h1 className="new-customer-heading mb-10 text-white">
-        {isEditing ? 'Edit Customer' : 'New Customer'}
+      <h1 className="new-job-heading mb-10 text-white">
+        {isEditing ? 'Edit Job' : 'New Job'}
       </h1>
       <div className="main-container flex justify-center">
         <div className="form-container w-96 h-full">
@@ -80,71 +76,71 @@ export function NewCustomerForm() {
             className="flex flex-col justify-between h-full">
             <div className="h-full">
               <div className="flex text-3xl mb-2">
-                <label htmlFor="name" className="text-white ">
-                  Name
+                <label htmlFor="jobDetails" className="text-white ">
+                  Job Details
                 </label>
               </div>
               <div className="text-3xl mb-6">
                 <input
-                  name="name"
+                  name="jobDetails"
                   type="text"
-                  id="name"
-                  defaultValue={customer?.name ?? ''} // if there is name then use value, if not then set to empty string
+                  id="job"
+                  defaultValue={job?.jobDetails ?? ''} // if there is name then use value, if not then set to empty string
                   required
                   className="w-full rounded-md p-2 bg-sky-400 text-white"
                 />
               </div>
               <div className="flex text-3xl mb-2">
-                <label htmlFor="phoneNumber" className="text-white">
-                  Phone Number
+                <label htmlFor="quantity" className="text-white">
+                  Quantity
                 </label>
               </div>
-              <p className="flex text-white">Format: 123-456-7890</p>
               <div className="text-3xl mb-6">
                 <input
-                  name="phoneNumber"
-                  type="tel"
-                  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                  defaultValue={customer?.phoneNumber ?? ''}
+                  name="quantity"
+                  type="number"
+                  defaultValue={job?.quantity ?? ''}
                   required
                   className="w-full rounded-md p-2 bg-sky-400 text-white"
                 />
               </div>
               <div className="flex text-3xl mb-2">
-                <label htmlFor="address" className="text-white ">
-                  Address
+                <label htmlFor="perCost" className="text-white ">
+                  Per cost $
                 </label>
               </div>
               <div className="text-3xl mb-6">
                 <input
-                  name="address"
+                  name="perCost"
                   type="text"
-                  id="address"
-                  defaultValue={customer?.address ?? ''}
+                  id="perCost"
+                  defaultValue={job?.perCost ?? ''}
                   required
                   className="w-full rounded-md p-2 bg-sky-400 text-white"
                 />
               </div>
               <div className="flex text-3xl mb-2">
-                <label htmlFor="email" className="text-white ">
-                  Email
+                <label htmlFor="dateOfJob" className="text-white ">
+                  Date of Job
                 </label>
               </div>
               <div className="text-3xl mb-6">
                 <input
-                  name="email"
-                  type="text"
-                  id="email"
-                  defaultValue={customer?.email ?? ''}
+                  name="dateOfJob"
+                  type="date"
+                  id="dateOfJob"
+                  min="2023-01-01"
+                  max="2032-12-31"
+                  defaultValue={job?.dateOfJob ?? ''}
                   required
-                  className="w-full rounded-md p-2 bg-sky-400 text-white"
+                  className="w-full rounded-md p-2 bg-sky-400 text-white "
                 />
               </div>
             </div>
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-green-500 rounded-3xl hover:bg-green-600 mb-4">
+                className="bg-green-500 rounded-3xl hover:bg-green-600">
                 Save
               </button>
               <div>
@@ -169,7 +165,7 @@ export function NewCustomerForm() {
               <div className="modal bg-sky-900">
                 <div>
                   <p className="mt-4">
-                    Are you sure you want to delete this Customer?
+                    Are you sure you want to delete this specific Job?
                   </p>
                 </div>
                 <div className="flex justify-between mt-7">

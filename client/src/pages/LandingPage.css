@@ -1,5 +1,5 @@
-.main-container {
-  height: 800px;
+.main-container-landing-page {
+  height: full;
 }
 
 .margin {
@@ -9,6 +9,7 @@
 
 .select-option {
   margin-top: 58px;
+  margin-bottom: 58px;
   font-size: 45px;
   text-decoration: underline;
 }
@@ -47,5 +48,30 @@
 }
 
 .new-customer:hover a {
+  color: white;
+}
+
+.new-job {
+  transition: transform 0.2s;
+}
+
+.new-job:hover {
+  transform: scale(1.5);
+  color: white;
+}
+
+.new-job:hover a {
+  color: white;
+}
+
+.job-list {
+  transition: transform 0.2s;
+}
+
+.job-list:hover {
+  transform: scale(1.5);
+}
+
+.job-list:hover a {
   color: white;
 }
