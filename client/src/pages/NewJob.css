@@ -1,5 +1,9 @@
-.new-customer-heading {
+.new-job-heading {
   margin-top: 58px;
   font-size: 45px;
   text-decoration: underline;
+}
+
+.main-container {
+  height: 730px;
 }

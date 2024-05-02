@@ -48,6 +48,7 @@ app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
 app.get('/api/customers', async (req, res, next) => {
+  // hit this emdponit for all customers , use this to populate select component
   try {
     const sql = `
       select *
@@ -155,12 +156,47 @@ app.delete('/api/customers/:customerId', async (req, res, next) => {
 app.get('/api/jobs', async (req, res, next) => {
   try {
     const sql = `
-      select *
-        from "jobs"
-        order by "jobId";
+    select "jobDetails",
+      "jobId",
+      "quantity",
+      "perCost",
+      "dateOfJob",
+      "customers"."customerId",
+      "customers"."name"
+      from "jobs"
+      join "customers" using ("customerId")
+      order by "jobId";
     `;
     const result = await db.query<Job>(sql);
     res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/jobSearch/:customerName', async (req, res, next) => {
+  try {
+    const { customerName } = req.params;
+    console.log('customerName:', customerName);
+    if (!customerName) {
+      throw new ClientError(400, `Missing customer name`);
+    }
+    const sql = `
+    select "jobDetails",
+      "jobId",
+      "quantity",
+      "perCost",
+      "dateOfJob",
+      "customers"."name"
+      from "jobs"
+      join "customers" using ("customerId")
+      where "customers"."name" = $1
+      order by "jobId";
+    `;
+    const params = [customerName];
+    const result = await db.query<Job>(sql, params);
+    res.json(result.rows);
+    console.log('result.rows:', result.rows);
   } catch (err) {
     next(err);
   }
@@ -179,6 +215,7 @@ app.get('/api/jobs/:jobId', async (req, res, next) => {
     const params = [jobId];
     const result = await db.query(sql, params);
     const job = result.rows[0];
+    console.log('jobb:', job);
     if (!job) throw new ClientError(404, `job ${jobId} not found`);
     res.json(job);
   } catch (err) {
@@ -188,6 +225,7 @@ app.get('/api/jobs/:jobId', async (req, res, next) => {
 
 app.post('/api/jobs', async (req, res, next) => {
   try {
+    console.log('req.body:', req.body);
     const { customerId, jobDetails, quantity, perCost, dateOfJob } = req.body;
     if (!customerId || !jobDetails || !quantity || !perCost || !dateOfJob) {
       throw new ClientError(400, 'missing job information required');

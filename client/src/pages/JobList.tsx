@@ -1,29 +1,29 @@
+import './JobList.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import './CustomerList.css';
-import { type Customer } from '../data';
+import { type Job } from '../data';
 
-export function CustomerList() {
-  const [customers, setCustomers] = useState<Customer[]>();
+export function JobList() {
+  const [jobs, setJobs] = useState<Job[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>();
 
   useEffect(() => {
-    async function fetchCustomers() {
+    async function fetchJobs() {
       try {
-        const response = await fetch('/api/customers');
+        const response = await fetch('/api/jobs');
         if (!response.ok) {
           throw new Error(`fetch error ${response.status}`);
         }
-        const customers = await response.json();
-        setCustomers(customers);
+        const jobs = await response.json();
+        setJobs(jobs);
       } catch (error) {
         setError(error);
       } finally {
         setIsLoading(false);
       }
     }
-    fetchCustomers();
+    fetchJobs();
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
@@ -38,57 +38,56 @@ export function CustomerList() {
   return (
     <div>
       <div>
-        <h1 className="mb-14 mt-14 customer-list-heading text-black flex justify-center">
-          All Customers
+        <h1 className="mb-14 mt-14 job-list-heading text-black flex justify-center">
+          All Jobs
         </h1>
       </div>
       <div className=" flex justify-center">
         <div className="flex flex-wrap justify-center">
-          {customers?.map(
-            (
-              customer // build an array of customer cards basis-2/3 md:basis-1/2 lg:basis-1/3
-            ) => (
-              <div
-                key={customer.customerId} // React making sure every item it creates has a trackable identifier
-                className=" basis-2/3 md:basis-1/2 lg:basis-1/3 ">
-                <CustomerCard customer={customer} />
-              </div>
-            )
-          )}
+          {jobs?.map((job) => (
+            <div
+              key={job.jobId}
+              className="basis-2/3 md:basis-1/2 lg:basis-1/3">
+              <JobCard job={job} />
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-type CustomerProps = {
-  customer: Customer;
+type JobProps = {
+  job: Job;
 };
 
-function CustomerCard({ customer }: CustomerProps) {
-  const { name, phoneNumber, address, email } = customer; // will need  customerId eventually
+function JobCard({ job }: JobProps) {
+  const { jobDetails, quantity, perCost, dateOfJob, name } = job; // will need  customerId eventually
   return (
-    <div className="flex justify-center text-base md:text-lg ">
+    <div className="flex justify-center text-base md:text-lg">
       <div className="w-full md:w-11/12">
         <div className="card-body border-solid border-4 border-black mt-4 mb-4 rounded-2xl text-xl bg-white text-black">
-          <p className="mt-4 mb-4">Name: {name}</p>
-          <p className="mt-4 mb-4">Phone Number: {phoneNumber}</p>
-          <p className="mt-4 mb-4">Address: {address}</p>
-          <p className="mt-4 mb-4">Email: {email}</p>
+          <p className="mt-4 mb-4">Name: {name} </p>
+          <p className="mt-4 mb-4">Jod Details: {jobDetails}</p>
+          <p className="mt-4 mb-4">Quantity: {quantity}</p>
+          <p className="mt-4 mb-4">perCost$: {perCost}</p>
+          <p className="mt-4 mb-4">Date Of Job: {dateOfJob}</p>
           <div className="mt-7 mb-7 flex justify-evenly">
             <Link
               className="border-2 border-black bg-blue-600 rounded-2xl text-lg hover:bg-blue-700 text-white hover:text-white w-20 h-8"
-              to={`/customer-form/${customer.customerId}`}>
+              to={`/job-form/${job.jobId}`}>
               Edit
             </Link>
             <Link
               className="border-2 border-black bg-blue-600 rounded-2xl text-lg hover:bg-blue-700 text-white hover:text-white w-24 h-8"
-              to={`/job-form/${customer.customerId}-new`}>
+              to={`/job-form/${job.customerId}-new`}>
               New Job
             </Link>
           </div>
           <div className="mt-7 mb-7">
-            <Link to="/" className="text-red-500 p-3 hover:text-red-600">
+            <Link
+              to="/"
+              className="text-lg text-red-500 p-3 hover:text-red-600">
               Back
             </Link>
           </div>

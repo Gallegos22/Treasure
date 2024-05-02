@@ -5,9 +5,9 @@ export function LandingPage() {
   return (
     <div>
       <div>
-        <h1 className="select-option text-black">Please Select One</h1>
+        <h1 className="select-option text-white">Please Select One</h1>
       </div>
-      <div className="main-container flex justify-center">
+      <div className="main-container-landing-page flex justify-center">
         <div className="btn-container flex justify-center flex-col w-36">
           <div className="flex justify-center margin bg-blue-600 text-center rounded-xl new-customer">
             <Link
@@ -29,6 +29,18 @@ export function LandingPage() {
             <Link to="/new-invoice" className="text-white h-14 pt-3.5 text-lg">
               {' '}
               New Invoice
+            </Link>
+          </div>
+          <div className="flex justify-center margin bg-blue-600 rounded-xl job-list">
+            <Link to="/job-list" className="text-white h-14 pt-3.5 text-lg">
+              {' '}
+              Job List
+            </Link>
+          </div>
+          <div className="flex justify-center margin bg-blue-600 rounded-xl job-list">
+            <Link to="/job-search" className="text-white h-14 pt-3.5 text-lg">
+              {' '}
+              Search Job
             </Link>
           </div>
         </div>
