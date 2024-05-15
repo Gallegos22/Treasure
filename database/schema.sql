@@ -12,16 +12,20 @@ CREATE TABLE "public"."users" (
   "hashedPassword" text not null,
   "createdAt" timestamptz(6) not null default now()
 );
+
 CREATE TABLE "public"."customers" (
   "customerId" serial PRIMARY KEY,
+  "userId" integer not null,
   "name" text not null,
   "address" text not null,
   "email" text not null,
   "phoneNumber" text not null,
   "createdAt" timestamptz(6) not null default now()
 );
+
 CREATE TABLE "public"."jobs" (
   "jobId" serial PRIMARY KEY,
+  "userId" integer not null,
   "customerId" integer not null,
   "jobDetails" text not null,
   "quantity" integer not null,

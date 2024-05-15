@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './CustomerList.css';
 import { type Customer } from '../data';
+import { readToken } from '../data';
 
 export function CustomerList() {
   const [customers, setCustomers] = useState<Customer[]>();
@@ -11,7 +12,12 @@ export function CustomerList() {
   useEffect(() => {
     async function fetchCustomers() {
       try {
-        const response = await fetch('/api/customers');
+        const response = await fetch('/api/customers', {
+          headers: {
+            Authorization: `Bearer ${readToken()}`,
+          },
+        });
+        console.log('response:', response);
         if (!response.ok) {
           throw new Error(`fetch error ${response.status}`);
         }
@@ -38,7 +44,7 @@ export function CustomerList() {
   return (
     <div>
       <div>
-        <h1 className="mb-14 mt-14 customer-list-heading text-black flex justify-center">
+        <h1 className="mb-14 mt-14 customer-list-heading text-white flex justify-center">
           All Customers
         </h1>
       </div>
@@ -50,7 +56,7 @@ export function CustomerList() {
             ) => (
               <div
                 key={customer.customerId} // React making sure every item it creates has a trackable identifier
-                className=" basis-2/3 md:basis-1/2 lg:basis-1/3 ">
+                className="basis-2/3 md:basis-1/2 lg:basis-1/3">
                 <CustomerCard customer={customer} />
               </div>
             )
@@ -66,7 +72,7 @@ type CustomerProps = {
 };
 
 function CustomerCard({ customer }: CustomerProps) {
-  const { name, phoneNumber, address, email } = customer; // will need  customerId eventually
+  const { name, phoneNumber, address, email } = customer;
   return (
     <div className="flex justify-center text-base md:text-lg ">
       <div className="w-full md:w-11/12">
@@ -88,7 +94,9 @@ function CustomerCard({ customer }: CustomerProps) {
             </Link>
           </div>
           <div className="mt-7 mb-7">
-            <Link to="/" className="text-red-500 p-3 hover:text-red-600">
+            <Link
+              to="/landing-page"
+              className="text-red-500 p-3 hover:text-red-600">
               Back
             </Link>
           </div>

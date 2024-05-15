@@ -1,9 +1,26 @@
 import { Link, Outlet } from 'react-router-dom';
 import './LandingPage.css';
+import { useUser } from '../components/useUser';
+import { useNavigate } from 'react-router-dom';
 
 export function LandingPage() {
+  const navigate = useNavigate();
+  const { user, handleSignOut } = useUser();
+
   return (
     <div>
+      {user && (
+        <div className="mt-4 flex ">
+          <button
+            className="text-white bg-red"
+            onClick={() => {
+              handleSignOut();
+              navigate('/');
+            }}>
+            Sign Out
+          </button>
+        </div>
+      )}
       <div>
         <h1 className="select-option text-white">Please Select One</h1>
       </div>

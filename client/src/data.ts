@@ -1,5 +1,22 @@
+export const tokenKey = 'um.token';
+
+export function saveToken(token: string | undefined): void {
+  if (token) {
+    sessionStorage.setItem(tokenKey, token);
+  } else {
+    sessionStorage.removeItem(tokenKey);
+  }
+}
+
+export function readToken(): string {
+  const token = sessionStorage.getItem(tokenKey);
+  if (!token) throw new Error('No token found');
+  return token;
+}
+
 export type Customer = {
   customerId: number;
+  userId: number;
   name: string;
   address: string;
   email: string;
@@ -8,6 +25,7 @@ export type Customer = {
 
 export type Job = {
   jobId: number;
+  userId: number;
   customerId: number;
   jobDetails: string;
   quantity: string;
@@ -19,6 +37,9 @@ export type Job = {
 export async function removeCustomer(customerId: number): Promise<void> {
   const req = {
     method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
   };
   const res = await fetch(`/api/customers/${customerId}`, req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
@@ -27,6 +48,9 @@ export async function removeCustomer(customerId: number): Promise<void> {
 export async function removeJob(jobId: number): Promise<void> {
   const req = {
     method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${readToken()}`,
+    },
   };
   const res = await fetch(`/api/jobs/${jobId}`, req);
   if (!res.ok) throw new Error(`fetch Error ${res.status}`);
@@ -39,6 +63,7 @@ export async function updateCustomer(customer: Customer): Promise<Customer> {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(customer), // converting object to JSON string
   };
@@ -54,6 +79,7 @@ export async function updateJob(job: Job): Promise<Job> {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(job), // converting object to JSON string
   };
@@ -68,6 +94,7 @@ export async function addCustomer(customer: Customer): Promise<Customer> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(customer), // converting object to JSON string
   };
@@ -82,6 +109,7 @@ export async function addJob(job: Job): Promise<Job> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(job), // converting object to JSON string
   };

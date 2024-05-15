@@ -8,6 +8,7 @@ import {
   removeCustomer,
   updateCustomer,
   type Customer,
+  readToken,
 } from '../data';
 import { useEffect } from 'react';
 export const tokenKey = 'um.token';
@@ -25,7 +26,11 @@ export function NewCustomerForm() {
     async function load(id: number) {
       setIsLoading(true);
       try {
-        const customer = await fetch(`/api/customers/${customerId}`);
+        const customer = await fetch(`/api/customers/${customerId}`, {
+          headers: {
+            Authorization: `Bearer ${readToken()}`,
+          },
+        });
         if (!customer) throw new Error(`Entry with ID ${id} not found`);
         setCustomer(await customer.json());
       } catch (err) {
@@ -39,8 +44,9 @@ export function NewCustomerForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const newCustomer = Object.fromEntries(formData) as unknown as Customer; // WHY DO WE NEED AS UNKNOWN AS CUSTOMER
+    const target = event.target as HTMLFormElement;
+    const formData = new FormData(target);
+    const newCustomer = Object.fromEntries(formData) as unknown as Customer;
 
     if (isEditing) {
       updateCustomer({ ...customer, ...newCustomer });
@@ -48,7 +54,7 @@ export function NewCustomerForm() {
       addCustomer(newCustomer);
     }
 
-    event.target.reset();
+    target.reset();
     navigate('/customer-list');
   }
 
@@ -91,7 +97,7 @@ export function NewCustomerForm() {
                   id="name"
                   defaultValue={customer?.name ?? ''} // if there is name then use value, if not then set to empty string
                   required
-                  className="w-full rounded-md p-2 bg-sky-400 text-white"
+                  className="w-full rounded-md p-2 bg-sky-400 text-white border-2 border-white"
                 />
               </div>
               <div className="flex text-3xl mb-2">
@@ -103,11 +109,12 @@ export function NewCustomerForm() {
               <div className="text-3xl mb-6">
                 <input
                   name="phoneNumber"
+                  id="phoneNumber"
                   type="tel"
                   pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                   defaultValue={customer?.phoneNumber ?? ''}
                   required
-                  className="w-full rounded-md p-2 bg-sky-400 text-white"
+                  className="w-full rounded-md p-2 bg-sky-400 text-white border-2 border-white"
                 />
               </div>
               <div className="flex text-3xl mb-2">
@@ -122,7 +129,7 @@ export function NewCustomerForm() {
                   id="address"
                   defaultValue={customer?.address ?? ''}
                   required
-                  className="w-full rounded-md p-2 bg-sky-400 text-white"
+                  className="w-full rounded-md p-2 bg-sky-400 text-white border-2 border-white"
                 />
               </div>
               <div className="flex text-3xl mb-2">
@@ -137,21 +144,21 @@ export function NewCustomerForm() {
                   id="email"
                   defaultValue={customer?.email ?? ''}
                   required
-                  className="w-full rounded-md p-2 bg-sky-400 text-white"
+                  className="w-full rounded-md p-2 bg-sky-400 text-white border-2 border-white"
                 />
               </div>
             </div>
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-green-500 rounded-3xl hover:bg-green-600 mb-4">
+                className="bg-green-500 rounded-3xl hover:bg-green-600 mb-4 text-3xl w-24">
                 Save
               </button>
               <div>
                 {isEditing && (
                   <button
                     type="button"
-                    className="bg-red-500 rounded-3xl hover:bg-red-600 ml-40"
+                    className="bg-red-500 rounded-3xl hover:bg-red-600 ml-40 text-3xl w-28"
                     onClick={() => setIsDeleting(true)}>
                     Delete
                   </button>
@@ -159,7 +166,9 @@ export function NewCustomerForm() {
               </div>
             </div>
             <div className="mt-7 mb-14">
-              <Link to="/" className="text-red-500 text-3xl hover:text-red-600">
+              <Link
+                to="/landing-page"
+                className="text-red-500 text-3xl hover:text-red-600">
                 Back
               </Link>
             </div>

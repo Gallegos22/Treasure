@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { type Customer, type Job } from '../data';
+import { readToken, type Customer, type Job } from '../data';
 import { Link } from 'react-router-dom';
 
 export function JobSearch() {
@@ -10,9 +10,14 @@ export function JobSearch() {
   const [jobs, setJobs] = useState<Job[]>();
 
   useEffect(() => {
+    // generates all the customers onto the page
     async function fetchJobs() {
       try {
-        const response = await fetch('/api/customers');
+        const response = await fetch('/api/customers', {
+          headers: {
+            Authorization: `Bearer ${readToken()}`,
+          },
+        });
         if (!response.ok) {
           throw new Error(`fetch error ${response.status}`);
         }
@@ -29,14 +34,18 @@ export function JobSearch() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const customer = Object.fromEntries(formData) as unknown as Customer;
+    const formData = new FormData(event.currentTarget); // creating form data
+    const customer = Object.fromEntries(formData); // using fromEntries to generate an Object from formData
     try {
-      const response = await fetch(`/api/jobSearch/${customer.name}`);
+      const response = await fetch(`/api/jobSearch/${customer.name}`, {
+        headers: {
+          Authorization: `Bearer ${readToken()}`,
+        },
+      }); // ${customer.name}we are passing customer info to server
       if (!response.ok) {
         throw new Error(`fetch error ${response.status}`);
       }
-      const jobs = await response.json();
+      const jobs = await response.json(); // await response and turn it to json()
       setJobs(jobs);
     } catch (error) {
       setError(error);
@@ -64,17 +73,20 @@ export function JobSearch() {
       <div>
         <form className="flex justify-center" onSubmit={handleSubmit}>
           <select
-            className="bg-white text-black rounded-md text-3xl"
+            className="bg-white text-black rounded-md text-3xl border-2 border-black"
             name="name"
             id="name"
             value={val}
             onChange={(e) => setVal(e.target.value)}>
+            {/* // this will call setVal setter function and pass any value input */}
             <option value="" disabled>
               Select your Customer
             </option>
             {customers?.map((customer) => (
               <option key={customer.customerId} value={customer.name}>
+                {/* // set's Value for input option when we submit the form */}
                 {customer.name}
+                {/* // visually shows the name */}
               </option>
             ))}
           </select>
@@ -84,7 +96,9 @@ export function JobSearch() {
         </form>
       </div>
       <div className="mt-8">
-        <Link className="text-red-500 text-3xl hover:text-red-600" to="/">
+        <Link
+          className="text-red-500 text-3xl hover:text-red-600"
+          to="/landing-page">
           Back{' '}
         </Link>
       </div>
@@ -114,7 +128,7 @@ function JobCard({ job }: JobProps) {
           <p className="mt-4 mb-4">Name: {name} </p>
           <p className="mt-4 mb-4">Jod Details: {jobDetails}</p>
           <p className="mt-4 mb-4">Quantity: {quantity}</p>
-          <p className="mt-4 mb-4">perCost$: {perCost}</p>
+          <p className="mt-4 mb-4">Per cost $: {perCost}</p>
           <p className="mt-4 mb-4">Date Of Job: {dateOfJob}</p>
           <div className="mt-7 mb-7"></div>
         </div>
