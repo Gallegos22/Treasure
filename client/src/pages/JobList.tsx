@@ -1,7 +1,7 @@
 import './JobList.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { type Job } from '../data';
+import { readToken, type Job } from '../data';
 
 export function JobList() {
   const [jobs, setJobs] = useState<Job[]>();
@@ -11,7 +11,11 @@ export function JobList() {
   useEffect(() => {
     async function fetchJobs() {
       try {
-        const response = await fetch('/api/jobs');
+        const response = await fetch('/api/jobs', {
+          headers: {
+            Authorization: `Bearer ${readToken()}`,
+          },
+        });
         if (!response.ok) {
           throw new Error(`fetch error ${response.status}`);
         }
@@ -38,7 +42,7 @@ export function JobList() {
   return (
     <div>
       <div>
-        <h1 className="mb-14 mt-14 job-list-heading text-black flex justify-center">
+        <h1 className="mb-14 mt-14 job-list-heading text-white flex justify-center">
           All Jobs
         </h1>
       </div>
@@ -70,7 +74,7 @@ function JobCard({ job }: JobProps) {
           <p className="mt-4 mb-4">Name: {name} </p>
           <p className="mt-4 mb-4">Jod Details: {jobDetails}</p>
           <p className="mt-4 mb-4">Quantity: {quantity}</p>
-          <p className="mt-4 mb-4">perCost$: {perCost}</p>
+          <p className="mt-4 mb-4">Per cost $: {perCost}</p>
           <p className="mt-4 mb-4">Date Of Job: {dateOfJob}</p>
           <div className="mt-7 mb-7 flex justify-evenly">
             <Link

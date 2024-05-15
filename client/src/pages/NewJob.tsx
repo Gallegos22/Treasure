@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import './NewJob.css';
 import './Modal.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { removeJob, addJob, updateJob, type Job } from '../data';
+import { removeJob, addJob, updateJob, type Job, readToken } from '../data';
 import { useEffect } from 'react';
+// import { useUser } from '../components/useUser';
 export const tokenKey = 'um.token';
 
 export function NewJobForm() {
@@ -15,12 +16,17 @@ export function NewJobForm() {
   const [job, setJob] = useState<Job>();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
+  // const { user, handleSignOut } = useUser();
 
   useEffect(() => {
     async function load(id: number) {
       setIsLoading(true);
       try {
-        const job = await fetch(`/api/jobs/${jobId}`);
+        const job = await fetch(`/api/jobs/${jobId}`, {
+          headers: {
+            Authorization: `Bearer ${readToken()}`,
+          },
+        });
         if (!job) throw new Error(`Job with ID ${id} not found`);
         setJob(await job.json());
       } catch (err) {
@@ -34,17 +40,18 @@ export function NewJobForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const target = event.target as HTMLFormElement;
     const formData = new FormData(event.currentTarget);
     const newJob = Object.fromEntries(formData) as unknown as Job;
 
     if (isEditing) {
       updateJob({ ...job, ...newJob });
     } else {
-      newJob.customerId = jobId?.split('-')[0];
+      newJob.customerId = Number(jobId?.split('-')[0]);
       addJob(newJob);
     }
 
-    event.target.reset();
+    target.reset();
     navigate('/job-list');
   }
 
@@ -84,10 +91,10 @@ export function NewJobForm() {
                 <input
                   name="jobDetails"
                   type="text"
-                  id="job"
+                  id="jobDetails"
                   defaultValue={job?.jobDetails ?? ''} // if there is name then use value, if not then set to empty string
                   required
-                  className="w-full rounded-md p-2 bg-sky-400 text-white"
+                  className="w-full rounded-md p-2 bg-sky-400 text-white border-2 border-white"
                 />
               </div>
               <div className="flex text-3xl mb-2">
@@ -98,10 +105,11 @@ export function NewJobForm() {
               <div className="text-3xl mb-6">
                 <input
                   name="quantity"
+                  id="quantity"
                   type="number"
                   defaultValue={job?.quantity ?? ''}
                   required
-                  className="w-full rounded-md p-2 bg-sky-400 text-white"
+                  className="w-full rounded-md p-2 bg-sky-400 text-white border-2 border-white"
                 />
               </div>
               <div className="flex text-3xl mb-2">
@@ -116,7 +124,7 @@ export function NewJobForm() {
                   id="perCost"
                   defaultValue={job?.perCost ?? ''}
                   required
-                  className="w-full rounded-md p-2 bg-sky-400 text-white"
+                  className="w-full rounded-md p-2 bg-sky-400 text-white border-2 border-white"
                 />
               </div>
               <div className="flex text-3xl mb-2">
@@ -133,21 +141,21 @@ export function NewJobForm() {
                   max="2032-12-31"
                   defaultValue={job?.dateOfJob ?? ''}
                   required
-                  className="w-full rounded-md p-2 bg-sky-400 text-white "
+                  className="w-full rounded-md p-2 bg-sky-400 text-white border-2 border-white"
                 />
               </div>
             </div>
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-green-500 rounded-3xl hover:bg-green-600">
+                className="bg-green-500 rounded-3xl hover:bg-green-600 text-3xl w-24">
                 Save
               </button>
               <div>
                 {isEditing && (
                   <button
                     type="button"
-                    className="bg-red-500 rounded-3xl hover:bg-red-600 ml-40"
+                    className="bg-red-500 rounded-3xl hover:bg-red-600 ml-40 text-3xl w-28"
                     onClick={() => setIsDeleting(true)}>
                     Delete
                   </button>
@@ -155,7 +163,9 @@ export function NewJobForm() {
               </div>
             </div>
             <div className="mt-7 mb-14">
-              <Link to="/" className="text-red-500 text-3xl hover:text-red-600">
+              <Link
+                to="/landing-page"
+                className="text-red-500 text-3xl hover:text-red-600">
                 Back
               </Link>
             </div>
