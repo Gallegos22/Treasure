@@ -38,12 +38,8 @@ type Auth = {
   password: string;
 };
 
-const connectionString =
-  process.env.DATABASE_URL ||
-  `postgresql://${process.env.RDS_USERNAME}:${process.env.RDS_PASSWORD}@${process.env.RDS_HOSTNAME}:${process.env.RDS_PORT}/${process.env.RDS_DB_NAME}`;
-
 const db = new pg.Pool({
-  connectionString,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
@@ -419,5 +415,5 @@ app.use(defaultMiddleware(reactStaticDir));
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {
-  process.stdout.write(`\n\napp listening on port ${process.env.PORT}\n\n`);
+  console.log(`\n\napp listening on port ${process.env.PORT}\n\n`);
 });

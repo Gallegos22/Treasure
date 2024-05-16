@@ -10,9 +10,9 @@ export function LandingPage() {
   return (
     <div>
       {user && (
-        <div className="mt-4 flex ">
+        <div className="mt-8 ml-24 flex text-3xl">
           <button
-            className="text-white bg-red"
+            className="text-red-500 underline decoration-red-500"
             onClick={() => {
               handleSignOut();
               navigate('/');

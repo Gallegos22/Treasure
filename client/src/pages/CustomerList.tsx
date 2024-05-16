@@ -48,21 +48,32 @@ export function CustomerList() {
           All Customers
         </h1>
       </div>
-      <div className=" flex justify-center">
-        <div className="flex flex-wrap justify-center">
-          {customers?.map(
-            (
-              customer // build an array of customer cards basis-2/3 md:basis-1/2 lg:basis-1/3
-            ) => (
-              <div
-                key={customer.customerId} // React making sure every item it creates has a trackable identifier
-                className="basis-2/3 md:basis-1/2 lg:basis-1/3">
-                <CustomerCard customer={customer} />
-              </div>
-            )
-          )}
+      {customers?.length === 0 ? (
+        <>
+          <Link
+            to="/landing-page"
+            className="text-red-500 p-3 hover:text-red-600 text-3xl">
+            Back
+          </Link>
+          <p> No Current Customers Have Been Added. </p>
+        </>
+      ) : (
+        <div className=" flex justify-center">
+          <div className="flex flex-wrap justify-center">
+            {customers?.map(
+              (
+                customer // build an array of customer cards basis-2/3 md:basis-1/2 lg:basis-1/3
+              ) => (
+                <div
+                  key={customer.customerId} // React making sure every item it creates has a trackable identifier
+                  className="basis-2/3 md:basis-1/2 lg:basis-1/3">
+                  <CustomerCard customer={customer} />
+                </div>
+              )
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -76,7 +87,7 @@ function CustomerCard({ customer }: CustomerProps) {
   return (
     <div className="flex justify-center text-base md:text-lg ">
       <div className="w-full md:w-11/12">
-        <div className="card-body border-solid border-4 border-black mt-4 mb-4 rounded-2xl text-xl bg-white text-black">
+        <div className="card-body border-solid border-4 border-black mt-4 mb-4 rounded-2xl text-xl bg-white text-black ">
           <p className="mt-4 mb-4">Name: {name}</p>
           <p className="mt-4 mb-4">Phone Number: {phoneNumber}</p>
           <p className="mt-4 mb-4">Address: {address}</p>

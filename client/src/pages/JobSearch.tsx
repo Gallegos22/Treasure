@@ -90,7 +90,9 @@ export function JobSearch() {
               </option>
             ))}
           </select>
-          <button className="bg-sky-900 rounded-3xl" type="submit">
+          <button
+            className="bg-sky-900 rounded-3xl text-3xl w-28"
+            type="submit">
             Submit
           </button>
         </form>

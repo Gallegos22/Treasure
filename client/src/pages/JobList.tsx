@@ -46,17 +46,28 @@ export function JobList() {
           All Jobs
         </h1>
       </div>
-      <div className=" flex justify-center">
-        <div className="flex flex-wrap justify-center">
-          {jobs?.map((job) => (
-            <div
-              key={job.jobId}
-              className="basis-2/3 md:basis-1/2 lg:basis-1/3">
-              <JobCard job={job} />
-            </div>
-          ))}
+      {jobs?.length === 0 ? (
+        <>
+          <Link
+            to="/landing-page"
+            className="text-red-500 p-3 hover:text-red-600 text-3xl">
+            Back
+          </Link>
+          <p> No Current Jobs Have Been Added. </p>
+        </>
+      ) : (
+        <div className=" flex justify-center">
+          <div className="flex flex-wrap justify-center">
+            {jobs?.map((job) => (
+              <div
+                key={job.jobId}
+                className="basis-2/3 md:basis-1/2 lg:basis-1/3">
+                <JobCard job={job} />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

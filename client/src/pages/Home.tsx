@@ -29,6 +29,8 @@ export function Home() {
         throw new Error(`fetch Error ${res.status}`);
       }
       const { user, token } = await res.json();
+      console.log('user:', user);
+      console.log('token:', token);
       handleSignIn(user, token);
       console.log('Signed In', user);
       console.log('Received token:', token);
@@ -42,6 +44,9 @@ export function Home() {
 
   return (
     <div>
+      <div className="mt-24">
+        <h1>User Login</h1>
+      </div>
       {!user && (
         <div className="main-home-container m-4 flex justify-center items-center">
           <div className="form-container w-96 p-2 bg-white text-black border-2 border-black flex justify-center items-center">
