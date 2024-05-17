@@ -10,7 +10,6 @@ export function JobSearch() {
   const [jobs, setJobs] = useState<Job[]>();
 
   useEffect(() => {
-    // generates all the customers onto the page
     async function fetchJobs() {
       try {
         const response = await fetch('/api/customers', {

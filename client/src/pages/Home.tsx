@@ -15,25 +15,18 @@ export function Home() {
     try {
       setIsLoading(true);
       const formData = new FormData(event.currentTarget);
-      console.log('formData:', formData);
       const userData = Object.fromEntries(formData);
-      console.log('userData:', userData);
       const req = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       };
       const res = await fetch('/api/auth/sign-in', req);
-      console.log('response:', res);
       if (!res.ok) {
         throw new Error(`fetch Error ${res.status}`);
       }
       const { user, token } = await res.json();
-      console.log('user:', user);
-      console.log('token:', token);
       handleSignIn(user, token);
-      console.log('Signed In', user);
-      console.log('Received token:', token);
       navigate('landing-page');
     } catch (err) {
       alert(`Error signing in: ${err}`);
@@ -45,7 +38,7 @@ export function Home() {
   return (
     <div>
       <div className="mt-24">
-        <h1>User Loginn</h1>
+        <h1>User Loginna</h1>
       </div>
       {!user && (
         <div className="main-home-container m-4 flex justify-center items-center">

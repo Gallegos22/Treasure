@@ -17,7 +17,6 @@ export function CustomerList() {
             Authorization: `Bearer ${readToken()}`,
           },
         });
-        console.log('response:', response);
         if (!response.ok) {
           throw new Error(`fetch error ${response.status}`);
         }
