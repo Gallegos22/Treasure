@@ -38,7 +38,7 @@ export function Home() {
   return (
     <div>
       <div className="mt-24">
-        <h1>User Loginna</h1>
+        <h1>User Login</h1>
       </div>
       {!user && (
         <div className="main-home-container m-4 flex justify-center items-center">
