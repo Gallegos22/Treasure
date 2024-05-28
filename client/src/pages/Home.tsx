@@ -37,6 +37,12 @@ export function Home() {
 
   return (
     <div>
+Full-Stack-Project-Code-Cleanup
+
+      <div className="mt-24">
+        <h1>User Login</h1>
+      </div>
+ main
       {!user && (
         <div>
           <div className="mt-24">
