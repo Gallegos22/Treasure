@@ -37,59 +37,69 @@ export function Home() {
 
   return (
     <div>
+Full-Stack-Project-Code-Cleanup
+
       <div className="mt-24">
         <h1>User Login</h1>
       </div>
+ main
       {!user && (
-        <div className="main-home-container m-4 flex justify-center items-center">
-          <div className="form-container w-96 p-2 bg-white text-black border-2 border-black flex justify-center items-center">
-            <form onSubmit={handleSubmit}>
-              <div className="flex justify-start">
-                <label htmlFor="username">Username:</label>
-              </div>
-              <div>
-                <input
-                  type="text"
-                  name="username"
-                  className="bg-white border-black border-2 rounded-sm"
-                  autoComplete="username"
-                  id="username"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="flex justify-start mt-1.5">
-                  Password:
-                </label>
-              </div>
-              <div>
-                <input
-                  type="password"
-                  name="password"
-                  className="bg-white border-black border-2 rounded-sm"
-                  autoComplete="current-password"
-                  id="password"
-                  required
-                />
-              </div>
-              <div className="flex justify-evenly mt-5">
-                <div className="">
-                  <button
-                    className="btn btn-primary text-black p-0.5 rounded-md bg-sky-400 border-black text-base"
-                    onClick={() => navigate('sign-up')}>
-                    Sign Up
-                  </button>
+        <div>
+          <div className="mt-24">
+            <h1>User Login</h1>
+          </div>
+          <div className="main-home-container m-4 flex justify-center items-center">
+            <div className="form-container w-96 p-2 bg-white text-black border-2 border-black flex justify-center items-center">
+              <form onSubmit={handleSubmit}>
+                <div className="flex justify-start">
+                  <label htmlFor="username">Username:</label>
                 </div>
-                <div className="">
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className=" text-black p-0.5 rounded-md bg-sky-400 border-black">
-                    Sign In
-                  </button>
+                <div>
+                  <input
+                    type="text"
+                    name="username"
+                    className="bg-white border-black border-2 rounded-sm"
+                    autoComplete="username"
+                    id="username"
+                    required
+                  />
                 </div>
-              </div>
-            </form>
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="flex justify-start mt-1.5">
+                    Password:
+                  </label>
+                </div>
+                <div>
+                  <input
+                    type="password"
+                    name="password"
+                    className="bg-white border-black border-2 rounded-sm"
+                    autoComplete="current-password"
+                    id="password"
+                    required
+                  />
+                </div>
+                <div className="flex justify-evenly mt-5">
+                  <div className="">
+                    <button
+                      className="btn btn-primary text-black p-0.5 rounded-md bg-sky-400 border-black text-base"
+                      onClick={() => navigate('sign-up')}>
+                      Sign Up
+                    </button>
+                  </div>
+                  <div className="">
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className=" text-black p-0.5 rounded-md bg-sky-400 border-black">
+                      Sign In
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

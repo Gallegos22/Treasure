@@ -65,7 +65,6 @@ export function JobSearch() {
     <div>
       <div>
         <h1 className="mb-14 mt-14 job-list-heading text-white flex justify-center">
-          {' '}
           Search Jobs
         </h1>
       </div>
@@ -97,20 +96,26 @@ export function JobSearch() {
         </form>
       </div>
       <div className="mt-8">
-        <Link
-          className="text-red-500 text-3xl hover:text-red-600"
-          to="/landing-page">
-          Back{' '}
+        <Link className="text-red-800 text-3xl" to="/landing-page">
+          Back
         </Link>
       </div>
       <div>
-        <ul className="flex flex-wrap justify-center">
-          {jobs?.map((job) => (
-            <li className="basis-2/3 md:basis-1/2 lg:basis-1/3" key={job.jobId}>
-              <JobCard job={job} />
-            </li>
-          ))}
-        </ul>
+        {jobs?.length === 0 ? (
+          <>
+            <p className="mt-16 text-2xl">Current Customer Has No Jobs.</p>
+          </>
+        ) : (
+          <ul className="flex flex-wrap justify-center">
+            {jobs?.map((job) => (
+              <li
+                className="basis-2/3 md:basis-1/2 lg:basis-1/3"
+                key={job.jobId}>
+                <JobCard job={job} />
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

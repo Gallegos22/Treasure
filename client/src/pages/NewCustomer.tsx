@@ -80,13 +80,13 @@ export function NewCustomerForm() {
         {isEditing ? 'Edit Customer' : 'New Customer'}
       </h1>
       <div className="main-container flex justify-center">
-        <div className="form-container w-96 h-full">
+        <div className="form-container w-4/5 md:w-1/2 h-full">
           <form
             onSubmit={handleSubmit}
             className="flex flex-col justify-between h-full">
             <div className="h-full">
               <div className="flex text-3xl mb-2">
-                <label htmlFor="name" className="text-white ">
+                <label htmlFor="name" className="text-white">
                   Name
                 </label>
               </div>
@@ -166,9 +166,7 @@ export function NewCustomerForm() {
               </div>
             </div>
             <div className="mt-7 mb-14">
-              <Link
-                to="/landing-page"
-                className="text-red-500 text-3xl hover:text-red-600">
+              <Link to="/landing-page" className="text-red-800 text-3xl">
                 Back
               </Link>
             </div>

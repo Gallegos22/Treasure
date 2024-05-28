@@ -1,10 +1,17 @@
 export const tokenKey = 'um.token';
+import { User } from './components/UserContext';
+export const userKey = 'um.user';
 
-export function saveToken(token: string | undefined): void {
-  if (token) {
+export function saveToken(
+  token: string | undefined,
+  user: User | undefined
+): void {
+  if (token && user) {
     sessionStorage.setItem(tokenKey, token);
+    sessionStorage.setItem(userKey, JSON.stringify(user));
   } else {
     sessionStorage.removeItem(tokenKey);
+    sessionStorage.removeItem(userKey);
   }
 }
 
@@ -12,6 +19,12 @@ export function readToken(): string {
   const token = sessionStorage.getItem(tokenKey);
   if (!token) throw new Error('No token found');
   return token;
+}
+
+export function readUser(): string {
+  const user = sessionStorage.getItem(userKey);
+  if (!user) throw new Error('No user found');
+  return user;
 }
 
 export type Customer = {
@@ -38,7 +51,7 @@ export async function removeCustomer(customerId: number): Promise<void> {
   const req = {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${readToken()}`,
+      Authorization: `Bearer ${readToken()} ${readUser()}`,
     },
   };
   const res = await fetch(`/api/customers/${customerId}`, req);
@@ -49,7 +62,7 @@ export async function removeJob(jobId: number): Promise<void> {
   const req = {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${readToken()}`,
+      Authorization: `Bearer ${readToken()} ${readUser()}`,
     },
   };
   const res = await fetch(`/api/jobs/${jobId}`, req);
@@ -63,7 +76,7 @@ export async function updateCustomer(customer: Customer): Promise<Customer> {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${readToken()}`,
+      Authorization: `Bearer ${readToken()} ${readUser()}`,
     },
     body: JSON.stringify(customer), // converting object to JSON string
   };
@@ -79,7 +92,7 @@ export async function updateJob(job: Job): Promise<Job> {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${readToken()}`,
+      Authorization: `Bearer ${readToken()} ${readUser()}`,
     },
     body: JSON.stringify(job), // converting object to JSON string
   };
@@ -94,7 +107,7 @@ export async function addCustomer(customer: Customer): Promise<Customer> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${readToken()}`,
+      Authorization: `Bearer ${readToken()} ${readUser()}`,
     },
     body: JSON.stringify(customer), // converting object to JSON string
   };
@@ -109,7 +122,7 @@ export async function addJob(job: Job): Promise<Job> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${readToken()}`,
+      Authorization: `Bearer ${readToken()} ${readUser()}`,
     },
     body: JSON.stringify(job), // converting object to JSON string
   };

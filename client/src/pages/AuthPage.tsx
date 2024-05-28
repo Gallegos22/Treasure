@@ -7,7 +7,7 @@ type Props = {
 
 export function AuthPage({ mode }: Props) {
   return (
-    <div className="container m-4">
+    <div className="container">
       {mode === 'sign-up' && <RegistrationForm />}
       {mode === 'sign-in' && <Home />}
     </div>

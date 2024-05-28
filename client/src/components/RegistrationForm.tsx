@@ -25,7 +25,6 @@ export function RegistrationForm() {
       }
 
       const user = await res.json();
-      console.log('Registered:', user);
       alert(
         `Successfully registered ${user.username} as userId ${user.userId}.`
       );
@@ -40,7 +39,7 @@ export function RegistrationForm() {
   return (
     <div>
       <div className="mt-12 flex ml-32">
-        <Link to="/" className="text-red-500 text-3xl hover:text-red-600">
+        <Link to="/" className="text-red-800 text-3xl">
           Back
         </Link>
       </div>
