@@ -5,9 +5,9 @@ export function NewInvoice() {
     <div>
       <h1>New Invoice</h1>
       <div>
-        <p>Dummy Text. Soon To Be Invoice</p>
+        <p>Dummy Text. Soon To Be Invoice Feature</p>
       </div>
-      <Link to="/">Back </Link>
+      <Link to="/landing-page">Back </Link>
     </div>
   );
 }

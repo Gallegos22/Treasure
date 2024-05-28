@@ -98,23 +98,25 @@ app.post('/api/auth/sign-in', async (req, res, next) => {
     const [user] = result.rows;
     if (!user) {
       throw new ClientError(401, 'user error');
+    } else {
+      const { userId, hashedPassword } = user;
+      const verified = await argon2.verify(hashedPassword, password);
+      if (!verified) {
+        throw new ClientError(401, 'verify error');
+      } else {
+        const payload = { userId, username };
+        const token = jwt.sign(payload, hashKey);
+        res.json({ token, user: payload });
+      }
     }
-    const { userId, hashedPassword } = user;
-    const verified = await argon2.verify(hashedPassword, password);
-    if (!verified) throw new ClientError(401, 'verify error');
-    const payload = { userId, username };
-    const token = jwt.sign(payload, hashKey);
-    res.json({ token, user: payload });
   } catch (err) {
     next(err);
   }
 });
 
 app.get('/api/customers', authMiddleware, async (req, res, next) => {
-  // hit this endpoint for all customers , use this to populate select component
   try {
     const userId = req.user?.userId;
-    console.log('userId:', userId);
     if (!userId) {
       throw new ClientError(400, `Non-integer userId: ${userId}`);
     }
@@ -269,7 +271,7 @@ app.get(
   '/api/jobSearch/:customerName',
   authMiddleware,
   async (req, res, next) => {
-    // :customerName designating name of variable
+    // :customerName is designating name the of variable
     try {
       const { customerName } = req.params;
       if (!customerName) {
@@ -290,7 +292,6 @@ app.get(
       const params = [customerName];
       const result = await db.query<Job>(sql, params);
       res.json(result.rows);
-      console.log('result.rows:', result.rows);
     } catch (err) {
       next(err);
     }
@@ -310,7 +311,6 @@ app.get('/api/jobs/:jobId', authMiddleware, async (req, res, next) => {
     const params = [jobId];
     const result = await db.query(sql, params);
     const job = result.rows[0];
-    console.log('jobb:', job);
     if (!job) throw new ClientError(404, `job ${jobId} not found`);
     res.json(job);
   } catch (err) {

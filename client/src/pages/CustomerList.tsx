@@ -40,6 +40,7 @@ export function CustomerList() {
       </div>
     );
   }
+
   return (
     <div>
       <div>
@@ -49,12 +50,13 @@ export function CustomerList() {
       </div>
       {customers?.length === 0 ? (
         <>
-          <Link
-            to="/landing-page"
-            className="text-red-500 p-3 hover:text-red-600 text-3xl">
+          <Link to="/landing-page" className="text-red-800 p-3 text-3xl">
             Back
           </Link>
-          <p> No Current Customers Have Been Added. </p>
+          <p className="mt-16 text-2xl">
+            {' '}
+            No Current Customers Have Been Added.{' '}
+          </p>
         </>
       ) : (
         <div className=" flex justify-center">

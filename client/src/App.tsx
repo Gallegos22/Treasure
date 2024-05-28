@@ -9,25 +9,56 @@ import { NewJobForm } from './pages/NewJob';
 import { JobList } from './pages/JobList';
 import { JobSearch } from './pages/JobSearch';
 import { Home } from './pages/Home';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { saveToken } from './data';
 import { User, UserProvider } from './components/UserContext';
 import { AuthPage } from './pages/AuthPage';
+export const tokenKey = 'um.token';
+export const userKey = 'um.user';
 
 export default function App() {
   const [user, setUser] = useState<User>();
   const [token, setToken] = useState<string>();
+  const [error, setError] = useState<unknown>();
 
   function handleSignIn(user: User, token: string) {
+    sessionStorage.setItem(tokenKey, token);
+    sessionStorage.setItem(userKey, JSON.stringify(user));
+
     setUser(user);
     setToken(token);
-    saveToken(token);
+    saveToken(token, user);
   }
 
   function handleSignOut() {
     setUser(undefined);
     setToken(undefined);
-    saveToken(undefined);
+    saveToken(undefined, undefined);
+  }
+
+  useEffect(() => {
+    async function loadPage() {
+      try {
+        const sessionToken = sessionStorage.getItem(tokenKey);
+        if (sessionToken) {
+          const storedUser = JSON.parse(sessionStorage.getItem(userKey)!);
+          setToken(sessionToken);
+          setUser(storedUser);
+        }
+      } catch (error) {
+        setError(error);
+      }
+    }
+    loadPage();
+  }, []);
+
+  if (error) {
+    return (
+      <div>
+        Error Loading Page:{' '}
+        {error instanceof Error ? error.message : 'Unknown Error'}
+      </div>
+    );
   }
 
   const contextValue = { user, token, handleSignIn, handleSignOut };

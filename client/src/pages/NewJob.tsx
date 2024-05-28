@@ -5,7 +5,6 @@ import './Modal.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { removeJob, addJob, updateJob, type Job, readToken } from '../data';
 import { useEffect } from 'react';
-// import { useUser } from '../components/useUser';
 export const tokenKey = 'um.token';
 
 export function NewJobForm() {
@@ -16,7 +15,6 @@ export function NewJobForm() {
   const [job, setJob] = useState<Job>();
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
-  // const { user, handleSignOut } = useUser();
 
   useEffect(() => {
     async function load(id: number) {
@@ -77,7 +75,7 @@ export function NewJobForm() {
         {isEditing ? 'Edit Job' : 'New Job'}
       </h1>
       <div className="main-container flex justify-center">
-        <div className="form-container w-96 h-full">
+        <div className="form-container w-4/5 md:w-1/2 h-full">
           <form
             onSubmit={handleSubmit}
             className="flex flex-col justify-between h-full">
@@ -163,9 +161,7 @@ export function NewJobForm() {
               </div>
             </div>
             <div className="mt-7 mb-14">
-              <Link
-                to="/landing-page"
-                className="text-red-500 text-3xl hover:text-red-600">
+              <Link to="/landing-page" className="text-red-800 text-3xl ">
                 Back
               </Link>
             </div>
