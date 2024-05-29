@@ -80,7 +80,7 @@ export function RegistrationForm() {
             <div className="mt-5">
               <button
                 disabled={isLoading}
-                className="p-0.5 bg-sky-400 border-black border-2 rounded-sm">
+                className="p-0.5 bg-sky-400 border-black border-2 rounded-md text-black">
                 Register
               </button>
             </div>

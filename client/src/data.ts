@@ -51,7 +51,7 @@ export async function removeCustomer(customerId: number): Promise<void> {
   const req = {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${readToken()} ${readUser()}`,
+      Authorization: `Bearer ${readToken()}`,
     },
   };
   const res = await fetch(`/api/customers/${customerId}`, req);
@@ -62,7 +62,7 @@ export async function removeJob(jobId: number): Promise<void> {
   const req = {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${readToken()} ${readUser()}`,
+      Authorization: `Bearer ${readToken()}`,
     },
   };
   const res = await fetch(`/api/jobs/${jobId}`, req);
@@ -76,7 +76,7 @@ export async function updateCustomer(customer: Customer): Promise<Customer> {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${readToken()} ${readUser()}`,
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(customer), // converting object to JSON string
   };
@@ -92,7 +92,7 @@ export async function updateJob(job: Job): Promise<Job> {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${readToken()} ${readUser()}`,
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(job), // converting object to JSON string
   };
@@ -107,7 +107,7 @@ export async function addCustomer(customer: Customer): Promise<Customer> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${readToken()} ${readUser()}`,
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(customer), // converting object to JSON string
   };
@@ -122,7 +122,7 @@ export async function addJob(job: Job): Promise<Job> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${readToken()} ${readUser()}`,
+      Authorization: `Bearer ${readToken()}`,
     },
     body: JSON.stringify(job), // converting object to JSON string
   };
