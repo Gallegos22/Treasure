@@ -25,7 +25,6 @@ export function defaultMiddleware(reactStaticDir: string): any {
       return;
     }
     res.sendFile(`${reactStaticDir}/index.html`);
-    return console.log('hello');
   }
 
   return handleDefault;

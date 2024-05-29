@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { LandingPage } from './LandingPage';
 import { useUser } from '../components/useUser';
 import './Home.css';
@@ -37,12 +37,6 @@ export function Home() {
 
   return (
     <div>
-Full-Stack-Project-Code-Cleanup
-
-      <div className="mt-24">
-        <h1>User Login</h1>
-      </div>
- main
       {!user && (
         <div>
           <div className="mt-24">
@@ -82,18 +76,19 @@ Full-Stack-Project-Code-Cleanup
                   />
                 </div>
                 <div className="flex justify-evenly mt-5">
-                  <div className="">
+                  <div>
                     <button
-                      className="btn btn-primary text-black p-0.5 rounded-md bg-sky-400 border-black text-base"
+                      type="button"
+                      className="btn btn-primary text-black p-0.5 rounded-md bg-sky-400 border-black text-base border-2"
                       onClick={() => navigate('sign-up')}>
                       Sign Up
                     </button>
                   </div>
-                  <div className="">
+                  <div>
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className=" text-black p-0.5 rounded-md bg-sky-400 border-black">
+                      className=" text-black p-0.5 rounded-md bg-sky-400 border-black border-2">
                       Sign In
                     </button>
                   </div>
@@ -101,6 +96,7 @@ Full-Stack-Project-Code-Cleanup
               </form>
             </div>
           </div>
+          <Link to="/landing-page">Continue As Guest</Link>
         </div>
       )}
       {user && <LandingPage />}
